@@ -4,11 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.TakesScreenshot;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -50,8 +53,7 @@ public class TestScript05 {
 	}
 	
 	@Test(dataProvider = "GuruTest")
-	public void TestCase05(String username, String password) {
-		String actualTitle;
+	public void TestCase05(String username, String password) throws Exception {
 		String actualAlertMsg;
 		
 		driver.findElement(By.name("uid")).clear();
@@ -59,6 +61,8 @@ public class TestScript05 {
 		driver.findElement(By.name("password")).clear();
 		driver.findElement(By.name("password")).sendKeys(password);
 		driver.findElement(By.name("btnLogin")).click();
+		
+		takeSnapShot(driver, "screenshots\\login-" + username+ "-" + password + ".png");
 		
 		try{
 			Alert alt = driver.switchTo().alert();
@@ -83,7 +87,22 @@ public class TestScript05 {
 			String remain = dynamicText.substring(dynamicText.length() - 4);
 			// Check remain string must be numbers;
 			assertTrue(remain.matches(Util.SECOND_PATTERN));
+			
         } 
+	}
+	
+	public static void takeSnapShot(WebDriver webdriver, String fileWithPath) throws Exception{
+		//convert web driver to TakeScreenShot
+		TakesScreenshot screenshot = ((TakesScreenshot)webdriver);
+		
+		//call getScreenshotAs to create img file
+		File SrcFile = screenshot.getScreenshotAs(OutputType.FILE);
+		
+		//move img file to new dest
+		File DestFile = new File(fileWithPath);
+		
+		//Copy File at dest
+		FileUtils.copyFile(SrcFile, DestFile);
 	}
 	
 	@AfterMethod
