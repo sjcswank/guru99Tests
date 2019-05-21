@@ -1,6 +1,8 @@
 package testScripts;
 
 import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.*;
@@ -49,15 +51,6 @@ public class TestScript05 {
 	
 	@Test(dataProvider = "GuruTest")
 	public void TestCase05(String username, String password) {
-		/*
-		 * select username input, clear
-		 * input username
-		 * select password input, clear
-		 * input password
-		 * click button
-		 * try: move to alert, get text, close alert, check text
-		 * catch: check manager id
-		 */
 		String actualTitle;
 		String actualAlertMsg;
 		
@@ -75,11 +68,22 @@ public class TestScript05 {
 			assertEquals(actualAlertMsg, Util.EXPECT_ERROR);
 		}
 		
-		catch(NoAlertPresentException Ex) {
-			actualTitle = driver.getTitle();
-			
-			assertEquals(actualTitle, Util.EXPECT_TITLE);
-		}
+		catch (NoAlertPresentException Ex){ 
+	    	// Get text displayes on login page 
+			String pageText = driver.findElement(By.tagName("tbody")).getText();
+
+			// Extract the dynamic text mngrXXXX on page		
+			String[] parts = pageText.split(Util.PATTERN);
+			String dynamicText = parts[1];
+
+			// Check that the dynamic text is of pattern mngrXXXX
+			// First 4 characters must be "mngr"
+			assertTrue(dynamicText.substring(1, 5).equals(Util.FIRST_PATTERN));
+			// remain stores the "XXXX" in pattern mngrXXXX
+			String remain = dynamicText.substring(dynamicText.length() - 4);
+			// Check remain string must be numbers;
+			assertTrue(remain.matches(Util.SECOND_PATTERN));
+        } 
 	}
 	
 	@AfterMethod

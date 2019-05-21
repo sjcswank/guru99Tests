@@ -20,6 +20,12 @@ public class Util {
 	// Expected output
 	public static final String EXPECT_TITLE = "Guru99 Bank Manager HomePage";
 	public static final String EXPECT_ERROR = "User or Password is not valid";
+	
+	//Output Patterns
+	public static final String PATTERN = ":";
+    public static final String FIRST_PATTERN = "mngr";
+    public static final String SECOND_PATTERN = "[0-9]+";
+
 
 	/* You can change the Path of FireFox base on your environment here */
 	public static final String FIREFOX_PATH = "C:\\Program Files\\Mozilla Firefox\\firefox.exe";
